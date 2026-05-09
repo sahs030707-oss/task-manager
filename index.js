@@ -1,9 +1,12 @@
+console.log("JS FUNCIONANDO");
+
+let editingTaskId = null;
 function handleFormSubmit(event) {
 
 	event.preventDefault();
 
-	const titleInput = document.getElementById("title");
-	const descriptionInput = document.getElementById("description");
+	const titleInput = document.getElementById("task-title");
+	const descriptionInput = document.getElementById("task-description");
 
 	const titleError = document.getElementById("title-error");
 	const descriptionError = document.getElementById("description-error");
@@ -67,7 +70,21 @@ function handleFormSubmit(event) {
 
 	if(hasError) return;
 
+	if(editingTaskId){
+
+	task.id = editingTaskId;
+
+	const oldTask =
+	document.getElementById(editingTaskId);
+
+	oldTask.remove();
+
+	editingTaskId = null;
+
+}else{
+
 	task.id = Date.now();
+}
 
 	const taskElement = createTaskElement(task);
 
@@ -95,10 +112,32 @@ function createTaskElement (task) {
 
 	const divTaskAction = document.createElement("div");
 	divTaskAction.classList.add("task-actions");
-	const deleteButton = document.createElement("button");
-	deleteButton.textContent = "Eliminar";
-	deleteButton.addEventListener("click", () => deleteTaskElement(task.id))
+	const editButton = document.createElement("button");
+	editButton.type = "button"
+	editButton.textContent = "Editar";
+	editButton.addEventListener("click", () => {
 
+	console.log("EDITANDO");
+
+	const titleInput =
+	document.getElementById("task-title");
+
+	const descriptionInput =
+	document.getElementById("task-description");
+
+	titleInput.value = task.title;
+
+	descriptionInput.value = task.description;
+
+	editingTaskId = task.id;
+});
+	const deleteButton = document.createElement("button");
+	deleteButton.type = "button"
+	deleteButton.textContent = "Eliminar";
+	deleteButton.addEventListener("click", () => deleteTaskElement(task.id));
+
+	
+	divTaskAction.appendChild(editButton);
 	divTaskAction.appendChild(deleteButton);
 
 	const li = document.createElement("li");
