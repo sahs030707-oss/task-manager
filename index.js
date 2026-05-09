@@ -1,16 +1,84 @@
 function handleFormSubmit(event) {
+
 	event.preventDefault();
 
+	const titleInput = document.getElementById("title");
+	const descriptionInput = document.getElementById("description");
+
+	const titleError = document.getElementById("title-error");
+	const descriptionError = document.getElementById("description-error");
+
+	titleError.textContent = "";
+	descriptionError.textContent = "";
+
 	const formData = new FormData(event.target);
+
 	const task = Object.fromEntries(formData);
+
+	// VALIDACIONES
+
+	let hasError = false;
+
+	// titulo vacio
+
+	if(task.title.trim() === ""){
+
+		titleError.textContent =
+		"El título es obligatorio";
+
+		hasError = true;
+	}
+
+	// minimo caracteres
+
+	if(task.title.trim().length < 3){
+
+		titleError.textContent =
+		"El título debe tener mínimo 3 caracteres";
+
+		hasError = true;
+	}
+
+	// max descripcion
+
+	if(task.description.length > 40){
+
+		descriptionError.textContent =
+		"La descripción no puede superar 40 caracteres";
+
+		hasError = true;
+	}
+
+	// duplicados
+
+	const duplicatedTask = document.querySelectorAll(".task-content h3");
+
+	for(let taskTitle of duplicatedTask){
+
+		if(taskTitle.textContent.toLowerCase()
+		=== task.title.toLowerCase()){
+
+			titleError.textContent =
+			"Ya existe una tarea con ese título";
+
+			hasError = true;
+		}
+	}
+
+	if(hasError) return;
+
 	task.id = Date.now();
-	
+
 	const taskElement = createTaskElement(task);
-	const ulContainer = document.getElementById("task-list-container");
+
+	const ulContainer =
+	document.getElementById("task-list-container");
+
 	if (!ulContainer) return;
 
 	ulContainer.appendChild(taskElement);
-	// ulContainer.innerHTML = taskElement;
+
+	event.target.reset();
 }
 
 function createTaskElement (task) {
@@ -29,7 +97,7 @@ function createTaskElement (task) {
 	divTaskAction.classList.add("task-actions");
 	const deleteButton = document.createElement("button");
 	deleteButton.textContent = "Eliminar";
-	deleteButton.addEventListener("click", () => deleteTaskElement(task))
+	deleteButton.addEventListener("click", () => deleteTaskElement(task.id))
 
 	divTaskAction.appendChild(deleteButton);
 
@@ -39,19 +107,6 @@ function createTaskElement (task) {
 
 	li.appendChild(divTaskContent);
 	li.appendChild(divTaskAction);
-
-// 	const liTemplate = `
-// <li id="${task.id}" class="task-item">
-// 	<div class="task-content">
-// 			<h3>${task.title}</h3>
-// 			<p>${task.description}</p>
-// 	</div>
-// 	<div class="task-actions">
-// 			<button onclick="deleteTaskElement(${task.id})">Eliminar</button>
-// 	</div>
-// </li>`;
-
-// 	return liTemplate;
 
 	return li;
 }

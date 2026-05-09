@@ -12,8 +12,13 @@
     <div class="main-container">
         <h2>Task Manager Pro</h1>
             <form onsubmit="handleFormSubmit(event)">
-                <input required type="text" placeholder="Title" name="title">
-                <textarea placeholder="Add the task description" name="description" rows="5"></textarea>
+                <input type="text" placeholder="Title" name="title" id="title">
+                <small id="title-error"></small>
+                <textarea placeholder="Add the task description"
+                name="description"
+                rows="5"
+                id="description"></textarea>
+                <small id="description-error"></small>
                 <button class="submit-btn" type="submit">Submit</button>
             </form>
             <ul id="task-list-container" class="task-list"></ul>
